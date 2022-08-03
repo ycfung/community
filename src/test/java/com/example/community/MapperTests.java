@@ -1,7 +1,9 @@
 package com.example.community;
 
 import com.example.community.dao.AlphaDao;
+import com.example.community.dao.DiscussPostMapper;
 import com.example.community.dao.UserMapper;
+import com.example.community.entity.DiscussPost;
 import com.example.community.entity.User;
 import com.example.community.service.AlphaService;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,12 +18,16 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
 public class MapperTests {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private DiscussPostMapper discussPostMapper;
 
     @Test
     public void testSelectUser() {
@@ -61,6 +67,16 @@ public class MapperTests {
 
         rows = userMapper.updatePassword(150, "1234567890");
         System.out.println(rows);
+    }
 
+    @Test
+    public void testSelectPosts() {
+        List<DiscussPost> posts = discussPostMapper.selectDiscussPosts(149, 0, 10);
+        for (DiscussPost post : posts) {
+            System.out.println(post);
+        }
+
+        int rows = discussPostMapper.selectDiscussPostRows(149);
+        System.out.println(rows);
     }
 }
