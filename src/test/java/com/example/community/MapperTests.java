@@ -1,56 +1,54 @@
 package com.example.community;
 
-import com.example.community.dao.AlphaDao;
 import com.example.community.dao.DiscussPostMapper;
+import com.example.community.dao.LoginTicketMapper;
 import com.example.community.dao.UserMapper;
 import com.example.community.entity.DiscussPost;
+import com.example.community.entity.LoginTicket;
 import com.example.community.entity.User;
-import com.example.community.service.AlphaService;
-import org.apache.ibatis.annotations.Mapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
 @ContextConfiguration(classes = CommunityApplication.class)
 public class MapperTests {
+
     @Autowired
     private UserMapper userMapper;
 
     @Autowired
     private DiscussPostMapper discussPostMapper;
 
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
+
     @Test
     public void testSelectUser() {
         User user = userMapper.selectById(101);
-        assert user.getUsername().equals("liubei");
+        System.out.println(user);
 
         user = userMapper.selectByName("liubei");
-        assert user.getEmail().equals("nowcoder101@sina.com");
+        System.out.println(user);
 
         user = userMapper.selectByEmail("nowcoder101@sina.com");
-        assert user.getSalt().equals("12345");
-
+        System.out.println(user);
     }
 
     @Test
     public void testInsertUser() {
         User user = new User();
-        user.setUsername("ycfung");
-        user.setPassword("12345678");
+        user.setUsername("test");
+        user.setPassword("123456");
         user.setSalt("abc");
-        user.setHeaderUrl("https://pic.cnblogs.com/avatar/922272/20220719164603.png");
+        user.setEmail("test@qq.com");
+        user.setHeaderUrl("http://www.nowcoder.com/101.png");
         user.setCreateTime(new Date());
-        user.setEmail("rcf@hotmail.co.th");
 
         int rows = userMapper.insertUser(user);
         System.out.println(rows);
@@ -62,21 +60,43 @@ public class MapperTests {
         int rows = userMapper.updateStatus(150, 1);
         System.out.println(rows);
 
-        rows = userMapper.updateHeader(150, "https://s2.51cto.com/oss/202107/14/fe27cd74fd4cb6462a483cb14df8e638.jpg?x-oss-process=image/ignore-error,1");
+        rows = userMapper.updateHeader(150, "http://www.nowcoder.com/102.png");
         System.out.println(rows);
 
-        rows = userMapper.updatePassword(150, "1234567890");
+        rows = userMapper.updatePassword(150, "hello");
         System.out.println(rows);
     }
 
     @Test
     public void testSelectPosts() {
-        List<DiscussPost> posts = discussPostMapper.selectDiscussPosts(149, 0, 10);
-        for (DiscussPost post : posts) {
+        List<DiscussPost> list = discussPostMapper.selectDiscussPosts(149, 0, 10);
+        for (DiscussPost post : list) {
             System.out.println(post);
         }
 
         int rows = discussPostMapper.selectDiscussPostRows(149);
         System.out.println(rows);
     }
+
+    @Test
+    public void testInsertLoginTicket() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(101);
+        loginTicket.setTicket("abc");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + 1000 * 60 * 10));
+
+        loginTicketMapper.insertLoginTicket(loginTicket);
+    }
+
+    @Test
+    public void testSelectLoginTicket() {
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+
+        loginTicketMapper.updateStatus("abc", 1);
+        loginTicket = loginTicketMapper.selectByTicket("abc");
+        System.out.println(loginTicket);
+    }
+
 }
