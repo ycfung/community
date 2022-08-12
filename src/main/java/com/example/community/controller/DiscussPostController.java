@@ -1,12 +1,15 @@
 package com.example.community.controller;
 
 import com.example.community.service.DiscussPostService;
+import com.example.community.service.UserService;
 import com.example.community.util.HostHolder;
 import com.example.community.entity.DiscussPost;
 import com.example.community.entity.User;
 import com.example.community.util.CommunityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +25,9 @@ public class DiscussPostController {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     @ResponseBody
@@ -42,4 +48,15 @@ public class DiscussPostController {
         return CommunityUtil.getJSONString(0, "发布成功!");
     }
 
+    @RequestMapping(path = "/detail/{discussPostId}", method = RequestMethod.GET)
+    public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model) {
+        // 帖子
+        DiscussPost post = discussPostService.findDiscussPostById(discussPostId);
+        model.addAttribute("post", post);
+        // 作者
+        User user = userService.findUserById(post.getUserId());
+        model.addAttribute("user", user);
+
+        return "/site/discuss-detail";
+    }
 }
