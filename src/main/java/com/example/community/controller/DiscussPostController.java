@@ -4,8 +4,12 @@ import com.example.community.entity.Comment;
 import com.example.community.entity.DiscussPost;
 import com.example.community.entity.Page;
 import com.example.community.entity.User;
-import com.example.community.service.*;
-import com.example.community.util.*;
+import com.example.community.service.CommentService;
+import com.example.community.service.DiscussPostService;
+import com.example.community.service.UserService;
+import com.example.community.util.CommunityConstant;
+import com.example.community.util.CommunityUtil;
+import com.example.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,7 +77,6 @@ public class DiscussPostController implements CommunityConstant {
         // 评论VO列表
         List<Map<String, Object>> commentVoList = new ArrayList<>();
         if (commentList != null) {
-            // 两个for循环，第一层用于遍历此帖子的评论，第二层用于遍历此评论的评论
             for (Comment comment : commentList) {
                 // 评论VO
                 Map<String, Object> commentVo = new HashMap<>();
