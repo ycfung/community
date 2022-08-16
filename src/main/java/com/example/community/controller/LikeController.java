@@ -26,7 +26,6 @@ public class LikeController {
     @ResponseBody
     public String like(int entityType, int entityId) {
         User user = hostHolder.getUser();
-        System.out.println("Liked!!!!!");
         // 点赞
         likeService.like(user.getId(), entityType, entityId);
 
